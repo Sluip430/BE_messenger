@@ -17,6 +17,12 @@ export class User {
       nullable: true,
       default: null,
     })
+    confirmation_send_at: Date;
+
+    @Column({
+      nullable: true,
+      default: null,
+    })
     activated_at: Date;
 
     @Column({

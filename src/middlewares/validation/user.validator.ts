@@ -4,3 +4,7 @@ export const signUpValidation = Joi.object().keys({
   email: Joi.string().min(2).required(),
   password: Joi.string().min(2).required(),
 });
+
+export const queryTokenValidation = Joi.object().keys({
+  token: Joi.string().min(2).required(),
+});
