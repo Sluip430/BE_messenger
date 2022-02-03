@@ -9,7 +9,6 @@ sendGrid.setApiKey(API_KEY);
 
 export const sendMMail = async (data: any, token: number) => {
   try {
-    console.log(data);
     const { email } = data;
 
     const result = await sendGrid.send({

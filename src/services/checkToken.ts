@@ -9,3 +9,11 @@ export const checkValidToken = async (value) => {
 
   return !!DBResult;
 };
+
+export const getUserIdFromToken = async (token) => {
+  const { result, error } = decodeToken(token);
+
+  if (error) return { TokenError: { data: error.message, status: 400 } };
+
+  return { result };
+};
