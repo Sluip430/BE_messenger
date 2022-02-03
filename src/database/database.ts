@@ -1,7 +1,4 @@
-import { createConnection } from 'typeorm';
+import { UserRepository } from '../repository/user.repository';
+import { User } from '../entity/user';
 
-export const connectDB = () => {
-  createConnection().then((connection) => {
-    console.log('Connect to DB');
-  });
-};
+export const createInstanse = () =>
