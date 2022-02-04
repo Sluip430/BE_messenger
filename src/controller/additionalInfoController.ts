@@ -10,15 +10,13 @@ export const additionalInfoController = async (req: Request, res: Response, next
 
   const { result, TokenError } = await getUserIdFromToken(req.headers);
 
-  console.log(result);
+  if (TokenError) return next({ data: TokenError, status: 401 });
+
   const { DBResult, DBError } = await user.addInfoUser(value, result.id);
+  console.log(DBResult);
 
   if (DBError) return next({ data: DBError.data, status: 500 });
+  // const ;
 
-  // const token = geterateToken(DBResult.data);
-  // const { MailerResult, MailerError } = await sendMMail(DBResult.data, token);
-  //
-  // if (MailerError) return next({ data: MailerError.data, status: MailerError.status });
-  //
   res.status(DBResult.status).send(DBResult);
 };

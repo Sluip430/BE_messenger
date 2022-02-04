@@ -5,9 +5,9 @@ export const checkValidToken = async (value) => {
   const { result, error } = decodeToken(value);
 
   if (error) return false;
-  const { DBResult, DBError } = await user.getUserByEmail(result);
+  const DBResult = await user.getUserByEmail(result);
 
-  return !!DBResult;
+  return DBResult;
 };
 
 export const getUserIdFromToken = async (token) => {

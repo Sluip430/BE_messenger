@@ -17,7 +17,7 @@ export const sendMMail = async (data: any, token: number) => {
       subject: 'Email Verification',
       text: 'Hi! please confirm your email',
       html: `<h1>Hi! please confirm your email. 
-      Please visit http://localhost:8080/confirm-email?token=${token}</h1>`,
+      Please visit http://localhost:3004/api/confirm-email?token=${token}</h1>`,
     });
     // 'Check your Email to confirm your Email Address'
 
@@ -29,7 +29,7 @@ export const sendMMail = async (data: any, token: number) => {
           subject: 'Email Verification',
           text: 'Hi! please confirm your email',
           html: `<h1>Hi! please confirm your email. 
-      Please visit http://localhost:8080/confirm-email?token=${token}</h1>`,
+      Please visit http://localhost:3004/api/confirm-email?token=${token}</h1>`,
         },
         status: result[0].statusCode,
       },

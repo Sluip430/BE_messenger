@@ -3,11 +3,13 @@ import { signUpValidation } from '../middlewares/validation/user.validator';
 import { user } from '../repository/user.repository';
 import { geterateToken } from '../services/jwt';
 import { sendMMail } from '../helpers/sendGrid/sendMail';
+import { hashPassword } from '../bcrypt/bcryptPassword';
 
 export const signUpController = async (req: Request, res: Response, next: NextFunction) => {
   const { value, error } = signUpValidation.validate(req.body, { abortEarly: false });
 
   if (error) return next({ data: error.details[0].message, status: 400 });
+  value.password = await hashPassword(value.password);
 
   const { DBResult, DBError } = await user.createUser(value);
 

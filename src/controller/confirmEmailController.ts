@@ -7,9 +7,11 @@ export const confirmEmailController = async (req: Request, res: Response, next: 
 
   if (error) return next({ data: error.details[0].message, status: 400 });
 
-  if (await checkValidToken(value)) {
+  const isValid = await checkValidToken(value);
+
+  if (isValid) {
     res.setHeader('token', value.token);
-    res.redirect('http://sluipgenius.pp.ua/getImage/7');
+    res.redirect('http://sluipgenius.pp.ua/getImage/8');
   } else {
     res.redirect('https://www.google.com');
   }
