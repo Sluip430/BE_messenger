@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { signUpValidation } from '../middlewares/validation/user.validator';
 import { userRepository } from '../repository/user.repository';
-import { geterateSecretToken } from '../services/jwt';
+import { generateSecretToken } from '../services/jwt';
 import { sendMMail } from '../helpers/sendGrid/sendMail';
 import { hashPassword } from '../bcrypt/bcryptPassword';
 
@@ -15,7 +15,7 @@ export const signUpController = async (req: Request, res: Response, next: NextFu
 
   if (DBError) return next({ data: DBError.data, status: 400 });
 
-  const token = geterateSecretToken(DBResult.data);
+  const token = generateSecretToken(DBResult.data);
   const { MailerResult, MailerError } = await sendMMail(DBResult.data, token);
 
   if (MailerError) return next({ data: MailerError.data, status: MailerError.status });

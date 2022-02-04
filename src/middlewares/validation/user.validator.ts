@@ -15,3 +15,7 @@ export const additionalInfoValidation = Joi.object().keys({
   date_of_birthday: Joi.date().required(),
   gender: Joi.string().min(2).required(),
 });
+
+export const emailValidation = Joi.object().keys({
+  email: Joi.string().min(2).required(),
+});

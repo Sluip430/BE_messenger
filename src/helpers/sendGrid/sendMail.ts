@@ -38,3 +38,34 @@ export const sendMMail = async (data: any, token: number) => {
     return { MailerError: { data: error.message, status: 500 } };
   }
 };
+
+export const forgotPasswordMail = async (data: any, token: number) => {
+  try {
+    const { email } = data;
+    const result = await sendGrid.send({
+      to: email,
+      from: 'miha1488plet@gmail.com',
+      subject: 'Email Verification',
+      text: 'Hi! please confirm your email',
+      html: `<h1>Hi! please confirm change of password.
+      Please visit http://localhost:3004/api/change-password?token=${token}</h1>`,
+    });
+    // 'Check your Email to confirm your Email Address'
+
+    return {
+      result: {
+        data: {
+          to: email,
+          from: 'miha1488plet@gmail.com',
+          subject: 'Forgot password',
+          text: 'Hi! please confirm change of password',
+          html: `<h1>Hi! please confirm change of password.
+      Please visit http://localhost:3004/api/change-password?token=${token}</h1>`,
+        },
+        status: result[0].statusCode,
+      },
+    };
+  } catch (error) {
+    return { error: { data: error.message, status: 500 } };
+  }
+};

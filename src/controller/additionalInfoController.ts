@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { additionalInfoValidation } from '../middlewares/validation/user.validator';
 import { getUserIdFromToken } from '../services/checkToken';
 import { userRepository } from '../repository/user.repository';
-import { geterateAccessToken } from '../services/jwt';
+import { generateAccessToken } from '../services/jwt';
 
 export const additionalInfoController = async (req: Request, res: Response, next: NextFunction) => {
   const { value, error: validationError } = additionalInfoValidation.validate(req.body, { abortEarly: false });
@@ -18,7 +18,7 @@ export const additionalInfoController = async (req: Request, res: Response, next
   if (DBError) return next({ data: DBError.data, status: 500 });
   console.log(result);
 
-  const token = geterateAccessToken(result);
+  const token = generateAccessToken(result);
 
   res.header('access-token', token);
   res.status(DBResult.status).send(DBResult);

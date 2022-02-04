@@ -1,6 +1,6 @@
 import { userRepository } from '../../repository/user.repository';
 import { comparePassword } from '../../bcrypt/bcryptPassword';
-import { geterateAccessToken } from '../jwt';
+import { generateAccessToken } from '../jwt';
 
 export const signInServices = async (value) => {
   const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(value.email);
@@ -18,7 +18,7 @@ export const signInServices = async (value) => {
     return { error: { data: 'Please verify your account ', status: 401 } };
   }
 
-  const token = geterateAccessToken(DBResult.data);
+  const token = generateAccessToken(DBResult.data);
   const { result, error } = await userRepository.generateUserSession(value.email);
 
   if (error) return { error: { data: error.message, status: error.status } };

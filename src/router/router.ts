@@ -11,3 +11,4 @@ router.post(path.signUp, signUpController);
 router.get(path.confirmEmail, confirmEmailController);
 router.post(path.acceptInvitation, additionalInfoController);
 router.post(path.signIn, authorizationController.signIn);
+router.post(path.forgotPassword, authorizationController.forgotPassword);

@@ -5,7 +5,7 @@ dotenv.config();
 const { JWT_MAIL_KEY } = process.env;
 const { JWT_ACCESS_KEY } = process.env;
 
-export const geterateSecretToken = (data: any) => {
+export const generateSecretToken = (data: any) => {
   const { email, id } = data;
 
   const token = jwt.sign({ email, id }, JWT_MAIL_KEY);
@@ -13,7 +13,7 @@ export const geterateSecretToken = (data: any) => {
   return token;
 };
 
-export const geterateAccessToken = (data: any) => {
+export const generateAccessToken = (data: any) => {
   const { email, id } = data;
 
   const token = jwt.sign({ email, id }, JWT_ACCESS_KEY);
