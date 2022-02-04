@@ -10,7 +10,7 @@ export const confirmEmailController = async (req: Request, res: Response, next: 
   const isValid = await checkValidToken(value);
 
   if (isValid) {
-    res.setHeader('token', value.token);
+    res.setHeader('confirmation-token', value.token);
     res.redirect('http://sluipgenius.pp.ua/getImage/8');
   } else {
     res.redirect('https://www.google.com');

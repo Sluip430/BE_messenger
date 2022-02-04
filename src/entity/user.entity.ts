@@ -1,7 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity, Column, PrimaryGeneratedColumn, OneToMany,
+} from 'typeorm';
+import { SessionEntity } from './session.entity';
 
 @Entity()
-export class User {
+export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -49,11 +52,6 @@ export class User {
     })
     activated_at: Date;
 
-    @Column({
-      type: 'jsonb',
-      array: false,
-      default: () => "'[]'",
-      nullable: false,
-    })
-    public session: Array<{ session_id: number, expired_at: Date }> = [];
+    @OneToMany(() => SessionEntity, (session) => session.id)
+     session: SessionEntity[];
 }

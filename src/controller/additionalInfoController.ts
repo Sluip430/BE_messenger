@@ -1,22 +1,25 @@
 import { NextFunction, Request, Response } from 'express';
 import { additionalInfoValidation } from '../middlewares/validation/user.validator';
-import { checkValidToken, getUserIdFromToken } from '../services/checkToken';
-import { user } from '../repository/user.repository';
+import { getUserIdFromToken } from '../services/checkToken';
+import { userRepository } from '../repository/user.repository';
+import { geterateAccessToken } from '../services/jwt';
 
 export const additionalInfoController = async (req: Request, res: Response, next: NextFunction) => {
-  const { value, error } = additionalInfoValidation.validate(req.body, { abortEarly: false });
+  const { value, error: validationError } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
-  if (error) return next({ data: error, status: 400 });
+  if (validationError) return next({ data: validationError, status: 400 });
 
-  const { result, TokenError } = await getUserIdFromToken(req.headers);
+  const { result, error } = await getUserIdFromToken(req.headers);
 
-  if (TokenError) return next({ data: TokenError, status: 401 });
+  if (error) return next({ data: error, status: 401 });
 
-  const { DBResult, DBError } = await user.addInfoUser(value, result.id);
-  console.log(DBResult);
+  const { DBResult, DBError } = await userRepository.addInfoUser(value, result.id);
 
   if (DBError) return next({ data: DBError.data, status: 500 });
-  // const ;
+  console.log(result);
 
+  const token = geterateAccessToken(result);
+
+  res.header('access-token', token);
   res.status(DBResult.status).send(DBResult);
 };
