@@ -3,8 +3,6 @@ import { createConnection } from 'typeorm';
 import config from './src/configurations/config';
 import { router } from './src/router/router';
 import { IError } from './src/Interface/Error';
-import { User } from './src/entity/user';
-import { UserRepository } from './src/repository/user.repository';
 
 createConnection().then(async (connection) => {
   const app = express();
