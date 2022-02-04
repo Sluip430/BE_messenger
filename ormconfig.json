@@ -6,6 +6,6 @@
   "password": "s12122000",
   "database": "postgres",
   "entities": ["src/entity/*.ts"],
-  "logging": true,
+  "logging": false,
   "synchronize": true
 }
