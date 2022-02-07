@@ -1,10 +1,11 @@
 import {
   Entity, Column, PrimaryGeneratedColumn, OneToMany,
 } from 'typeorm';
+import { IUser } from '../Interface/return.interface';
 // import { SessionEntity } from './session.entity';
 
 @Entity()
-export class UserEntity {
+export class UserEntity implements IUser {
     @PrimaryGeneratedColumn()
     id: number;
 

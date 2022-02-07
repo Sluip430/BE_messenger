@@ -5,17 +5,10 @@ import {
   queryTokenValidation,
   signUpValidation,
 } from '../middlewares/validation/user.validator';
-import { signInServices } from '../services/authorization/signIn.services';
-import {
-  changePasswordServices,
-  forgotPasswordServices,
-  mailChangePasswordServices,
-} from '../services/authorization/password.services';
-import { hashPassword } from '../bcrypt/bcryptPassword';
 import { userRepository } from '../repository/user.repository';
-import { generateAccessToken, generateSecretToken } from '../services/jwt';
-import { sendMMail } from '../helpers/sendGrid/sendMail';
-import { checkValidToken, getUserIdFromToken } from '../services/checkToken';
+import { decodeToken } from '../services/jwt';
+import { checkValidToken } from '../services/checkToken';
+import { authorizationServices } from '../services/authorization/authorization.services';
 
 export class Controller {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -23,7 +16,7 @@ export class Controller {
 
     if (validationError) return next({ data: validationError, status: 400 });
 
-    const { result, error } = await signInServices(value);
+    const { result, error } = await authorizationServices.signIn(value);
 
     if (error) return next({ data: error.data, status: error.status });
 
@@ -35,7 +28,7 @@ export class Controller {
 
     if (validationError) return next({ data: validationError, status: 400 });
 
-    const { result, error } = await forgotPasswordServices(value);
+    const { result, error } = await authorizationServices.forgotPassword(value);
 
     if (error) return next({ data: error.data, status: error.status });
 
@@ -46,7 +39,7 @@ export class Controller {
 
     if (validationError) return next({ data: validationError, status: 400 });
 
-    const { result, error } = await mailChangePasswordServices(value);
+    const { result, error } = await authorizationServices.mailChangePassword(value);
 
     if (error) return res.redirect('https://www.google.com');
 
@@ -57,31 +50,24 @@ export class Controller {
     const { value, error: validationError } = passwordValidation.validate(req.body, { abortEarly: false });
 
     if (validationError) return next({ data: validationError, status: 400 });
-    console.log(req.headers);
-    const { result, error } = await changePasswordServices(value, req.headers);
+    const { result, error } = await authorizationServices.changePassword(value, req.headers.token as string);
 
     if (error) return next({ data: error.data, status: error.status });
 
     res.status(result.status).send(result.data);
   }
-  async signUpController(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const { value, error } = signUpValidation.validate(req.body, { abortEarly: false });
+  async signUp(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { value, error: validationError } = signUpValidation.validate(req.body, { abortEarly: false });
 
-    if (error) return next({ data: error.details[0].message, status: 400 });
-    value.password = await hashPassword(value.password);
+    if (validationError) return next({ data: validationError.details[0].message, status: 400 });
 
-    const { DBResult, DBError } = await userRepository.createUser(value);
+    const { result, error } = await authorizationServices.signUp(value);
 
-    if (DBError) return next({ data: DBError.data, status: 400 });
+    if (error) return next({ data: error.data, status: error.status });
 
-    const token = generateSecretToken(DBResult.data);
-    const { MailerResult, MailerError } = await sendMMail(DBResult.data, token);
-
-    if (MailerError) return next({ data: MailerError.data, status: MailerError.status });
-
-    res.status(MailerResult.status).send(MailerResult);
+    res.status(result.status).send(result);
   }
-  async confirmEmailController(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
 
     if (error) return next({ data: error.details[0].message, status: 400 });
@@ -95,24 +81,23 @@ export class Controller {
       res.redirect('https://www.google.com');
     }
   }
-  async additionalInfoController(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async additionalInfo(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error: validationError } = additionalInfoValidation.validate(req.body, { abortEarly: false });
 
     if (validationError) return next({ data: validationError, status: 400 });
 
-    const { result, error } = await getUserIdFromToken(req.headers);
-
-    if (error) return next({ data: error, status: 401 });
-
-    const { DBResult, DBError } = await userRepository.addInfoUser(value, result.id);
-
-    if (DBError) return next({ data: DBError.data, status: 500 });
-    console.log(result);
-
-    const token = generateAccessToken(result);
-
-    res.header('access-token', token);
-    res.status(DBResult.status).send(DBResult);
+    // const { result, error } = await decodeToken(req.headers.token as string, JWT);
+    //
+    // if (error) return next({ data: error, status: 401 });
+    //
+    // const { result: DBResult, error: DBError } = await userRepository.addInfoUser(value, result.id);
+    //
+    // if (DBError) return next({ data: DBError.data, status: 500 });
+    //
+    // const token = generateAccessToken(result);
+    //
+    // res.header('access-token', token);
+    // res.status(DBResult.status).send(DBResult);
   }
 }
 
