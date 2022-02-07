@@ -19,3 +19,7 @@ export const additionalInfoValidation = Joi.object().keys({
 export const emailValidation = Joi.object().keys({
   email: Joi.string().min(2).required(),
 });
+
+export const passwordValidation = Joi.object().keys({
+  password: Joi.string().min(2).required(),
+});

@@ -13,7 +13,7 @@ export const sendMMail = async (data: any, token: number) => {
 
     const result = await sendGrid.send({
       to: email,
-      from: 'miha1488plet@gmail.com',
+      from: 'olga.cigulova1991@gmail.com',
       subject: 'Email Verification',
       text: 'Hi! please confirm your email',
       html: `<h1>Hi! please confirm your email. 
@@ -25,7 +25,7 @@ export const sendMMail = async (data: any, token: number) => {
       MailerResult: {
         data: {
           to: email,
-          from: 'miha1488plet@gmail.com',
+          from: 'olga.cigulova1991@gmail.com',
           subject: 'Email Verification',
           text: 'Hi! please confirm your email',
           html: `<h1>Hi! please confirm your email. 
@@ -44,11 +44,11 @@ export const forgotPasswordMail = async (data: any, token: number) => {
     const { email } = data;
     const result = await sendGrid.send({
       to: email,
-      from: 'miha1488plet@gmail.com',
+      from: 'olga.cigulova1991@gmail.com',
       subject: 'Email Verification',
       text: 'Hi! please confirm your email',
       html: `<h1>Hi! please confirm change of password.
-      Please visit http://localhost:3004/api/change-password?token=${token}</h1>`,
+      Please visit http://localhost:3004/api/mail-change-password?token=${token}</h1>`,
     });
     // 'Check your Email to confirm your Email Address'
 
@@ -56,11 +56,11 @@ export const forgotPasswordMail = async (data: any, token: number) => {
       result: {
         data: {
           to: email,
-          from: 'miha1488plet@gmail.com',
+          from: 'olga.cigulova1991@gmail.com',
           subject: 'Forgot password',
           text: 'Hi! please confirm change of password',
           html: `<h1>Hi! please confirm change of password.
-      Please visit http://localhost:3004/api/change-password?token=${token}</h1>`,
+      Please visit http://localhost:3004/api/mail-change-password?token=${token}</h1>`,
         },
         status: result[0].statusCode,
       },

@@ -1,5 +1,5 @@
 import { userRepository } from '../../repository/user.repository';
-import { comparePassword } from '../../bcrypt/bcryptPassword';
+import { comparePassword, hashPassword } from '../../bcrypt/bcryptPassword';
 import { generateAccessToken } from '../jwt';
 
 export const signInServices = async (value) => {

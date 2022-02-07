@@ -74,6 +74,25 @@ export class UserRepository {
       return { error };
     }
   }
+  async updateUserPassword(user, newPassword) {
+    try {
+      const { id } = user;
+
+      console.log(user);
+      console.log(user.id);
+      this.typeORMRepository = getRepository(UserEntity);
+      const result = await this.typeORMRepository.createQueryBuilder().update(UserEntity).set({
+        password: newPassword,
+      })
+        .where('id = :id', { id })
+        .returning('session')
+        .execute();
+
+      return { result: 'Update Successful' };
+    } catch (error) {
+      return { error };
+    }
+  }
 }
 
 export const userRepository = new UserRepository();

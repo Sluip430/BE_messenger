@@ -4,4 +4,6 @@ export const path = {
   acceptInvitation: '/accept-invitation',
   signIn: '/sign-in',
   forgotPassword: '/forgot-password',
+  mailChangePassword: '/mail-change-password',
+  changePassword: '/change-password',
 };
