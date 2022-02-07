@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  additionalInfoValidation,
   emailValidation, passwordValidation,
   queryTokenValidation,
   signUpValidation,
@@ -12,8 +13,9 @@ import {
 } from '../services/authorization/password.services';
 import { hashPassword } from '../bcrypt/bcryptPassword';
 import { userRepository } from '../repository/user.repository';
-import { generateSecretToken } from '../services/jwt';
+import { generateAccessToken, generateSecretToken } from '../services/jwt';
 import { sendMMail } from '../helpers/sendGrid/sendMail';
+import { checkValidToken, getUserIdFromToken } from '../services/checkToken';
 
 export class Controller {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -78,6 +80,39 @@ export class Controller {
     if (MailerError) return next({ data: MailerError.data, status: MailerError.status });
 
     res.status(MailerResult.status).send(MailerResult);
+  }
+  async confirmEmailController(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
+
+    if (error) return next({ data: error.details[0].message, status: 400 });
+
+    const isValid = await checkValidToken(value);
+
+    if (isValid) {
+      res.setHeader('confirmation-token', value.token);
+      res.redirect('http://sluipgenius.pp.ua/getImage/8');
+    } else {
+      res.redirect('https://www.google.com');
+    }
+  }
+  async additionalInfoController(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { value, error: validationError } = additionalInfoValidation.validate(req.body, { abortEarly: false });
+
+    if (validationError) return next({ data: validationError, status: 400 });
+
+    const { result, error } = await getUserIdFromToken(req.headers);
+
+    if (error) return next({ data: error, status: 401 });
+
+    const { DBResult, DBError } = await userRepository.addInfoUser(value, result.id);
+
+    if (DBError) return next({ data: DBError.data, status: 500 });
+    console.log(result);
+
+    const token = generateAccessToken(result);
+
+    res.header('access-token', token);
+    res.status(DBResult.status).send(DBResult);
   }
 }
 
