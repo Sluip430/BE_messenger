@@ -17,24 +17,15 @@ export class UserRepository {
       const user = this.typeORMRepository.create(value);
       const result = await this.typeORMRepository.save(user);
 
-      return ({ result: { data: result[0], status: 200 } });
+      return ({ result: { data: result, status: 200 } });
     } catch (err) {
       return ({ error: { data: err.message, status: 500 } });
     }
   }
-  async getUserByEmailTime(value: IUser): Promise<boolean> {
-    this.typeORMRepository = getRepository(UserEntity);
-    const result = await this.typeORMRepository.findOne({ where: { email: value.email } });
-    const time = moment().toDate();
-
-    if (Number(time) > (Number(result.confirmation_send_at) + 3 * 3600 * 1000)) {
-      return false;
-    }
-
-    if (!result) return false;
-
-    return true;
-  }
+  // async getUserByEmailTime(value: IUser): Promise<boolean> {
+  //   this.typeORMRepository = getRepository(UserEntity);
+  //   const result = await this.typeORMRepository.findOne({ where: { email: value.email } });
+  // }
   async addInfoUser(value: IUser, id: number): Promise<IResult<IReturnUserEntity, IReturnError>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);

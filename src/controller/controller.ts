@@ -5,9 +5,6 @@ import {
   queryTokenValidation,
   signUpValidation,
 } from '../middlewares/validation/user.validator';
-import { userRepository } from '../repository/user.repository';
-import { decodeToken } from '../services/jwt';
-import { checkValidToken } from '../services/checkToken';
 import { authorizationServices } from '../services/authorization/authorization.services';
 
 export class Controller {
@@ -72,9 +69,9 @@ export class Controller {
 
     if (error) return next({ data: error.details[0].message, status: 400 });
 
-    const isValid = await checkValidToken(value);
+    const result = authorizationServices.confirmEmail(value);
 
-    if (isValid) {
+    if (result) {
       res.setHeader('confirmation-token', value.token);
       res.redirect('http://sluipgenius.pp.ua/getImage/8');
     } else {
@@ -86,18 +83,12 @@ export class Controller {
 
     if (validationError) return next({ data: validationError, status: 400 });
 
-    // const { result, error } = await decodeToken(req.headers.token as string, JWT);
-    //
-    // if (error) return next({ data: error, status: 401 });
-    //
-    // const { result: DBResult, error: DBError } = await userRepository.addInfoUser(value, result.id);
-    //
-    // if (DBError) return next({ data: DBError.data, status: 500 });
-    //
-    // const token = generateAccessToken(result);
-    //
-    // res.header('access-token', token);
-    // res.status(DBResult.status).send(DBResult);
+    const { result, error } = await authorizationServices.additionalInfo(value, req.headers.token);
+
+    if (error) return next({ data: error, status: 401 });
+
+    res.header('access-token', result.token);
+    res.status(result.status).send(result.data);
   }
 }
 

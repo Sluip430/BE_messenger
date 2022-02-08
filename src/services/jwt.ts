@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import {
-  IResult, IReturnError, IReturnIUser, IReturnResult, IReturnUserEntity, IUser,
+  IResult, IReturnError, IReturnIUser, IUser,
 } from '../Interface/return.interface';
 import { UserEntity } from '../entity/user.entity';
 
