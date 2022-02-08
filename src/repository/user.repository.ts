@@ -3,29 +3,27 @@ import moment from 'moment';
 import axios from 'axios';
 import { UserEntity } from '../entity/user.entity';
 import {
-  IResult, IReturnError, IReturnResult, IReturnUserEntity, IUser,
+  IResult, IReturnError, IReturnResult, IReturnUserEntity,
 } from '../Interface/return.interface';
+import { IUser } from '../Interface/user.interface';
 
 export class UserRepository {
   typeORMRepository: Repository<UserEntity>;
   constructor() {}
 
-  async createUser(value: IUser): Promise<IResult<IReturnUserEntity, IReturnError>> {
+  async createUser(value: IUser): Promise<IResult<UserEntity, IReturnError>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
       value.confirmation_send_at = moment().toDate();
       const user = this.typeORMRepository.create(value);
+
       const result = await this.typeORMRepository.save(user);
 
-      return ({ result: { data: result, status: 200 } });
-    } catch (err) {
-      return ({ error: { data: err.message, status: 500 } });
+      return { result };
+    } catch (error) {
+      return error;
     }
   }
-  // async getUserByEmailTime(value: IUser): Promise<boolean> {
-  //   this.typeORMRepository = getRepository(UserEntity);
-  //   const result = await this.typeORMRepository.findOne({ where: { email: value.email } });
-  // }
   async addInfoUser(value: IUser, id: number): Promise<IResult<IReturnUserEntity, IReturnError>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
@@ -41,19 +39,19 @@ export class UserRepository {
         .returning('session')
         .execute();
 
-      return ({ result: { data: result.raw, status: 200 } });
-    } catch (err) {
-      return ({ error: { data: err.message, status: 500 } });
+      return { result: result.raw };
+    } catch (error) {
+      return { error };
     }
   }
-  async getUserByEmail(email: string): Promise<IResult<IReturnUserEntity, IReturnError>> {
+  async getUserByEmail(email: string): Promise<IResult<UserEntity, IReturnError>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
       const result = await this.typeORMRepository.findOne({ where: { email } });
 
-      return { result: { data: result, status: 200 } };
+      return { result };
     } catch (error) {
-      return { error: { data: error.message, status: 500 } };
+      return { error };
     }
   }
   async generateUserSession(user: UserEntity): Promise<IResult<IReturnResult, IReturnError>> {
@@ -69,7 +67,7 @@ export class UserRepository {
       return { error: { data: error.message, status: error.status } };
     }
   }
-  async updateUserPassword(user: UserEntity, newPassword: string): Promise<IResult<IReturnResult, IReturnError>> {
+  async updateUserPassword(user: UserEntity, newPassword: string): Promise<IResult<string, IReturnError>> {
     try {
       const { id } = user;
 
@@ -80,14 +78,8 @@ export class UserRepository {
         .where('id = :id', { id })
         .execute();
 
-      return { result: { data: 'Update Successful', status: 200 } };
+      return { result: 'Update Successful' };
     } catch (error) {
-      const url = encodeURI(
-        `https://api.telegram.org/bot5169347842:AAETMbYL8GwumiYYen8m2VIUSEXJYzoqYs0/sendMessage?chat_id=501736264&text=${error}`,
-      );
-
-      await axios.get(url);
-
       return { error };
     }
   }

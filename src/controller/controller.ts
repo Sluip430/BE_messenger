@@ -6,6 +6,7 @@ import {
   signUpValidation,
 } from '../middlewares/validation/user.validator';
 import { authorizationServices } from '../services/authorization/authorization.services';
+import {redirect} from "../constraint/redirect";
 
 export class Controller {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -38,10 +39,10 @@ export class Controller {
 
     const { result, error } = await authorizationServices.mailChangePassword(value);
 
-    if (error) return res.redirect('https://www.google.com');
+    if (error) return res.redirect(redirect.EMAIL_FORGOT_ERROR);
 
     res.setHeader('confirmation-token', result.data);
-    res.redirect('http://sluipgenius.pp.ua/getImage/8');
+    res.redirect(redirect.EMAIL_FORGOT_SUCCESS);
   }
   async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error: validationError } = passwordValidation.validate(req.body, { abortEarly: false });
@@ -62,7 +63,7 @@ export class Controller {
 
     if (error) return next({ data: error.data, status: error.status });
 
-    res.status(result.status).send(result);
+    res.status(201).send(result);
   }
   async confirmEmail(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error } = queryTokenValidation.validate(req.query, { abortEarly: false });
@@ -73,9 +74,9 @@ export class Controller {
 
     if (result) {
       res.setHeader('confirmation-token', value.token);
-      res.redirect('http://sluipgenius.pp.ua/getImage/8');
+      res.redirect(redirect.EMAIL_CONF_SUCCESS);
     } else {
-      res.redirect('https://www.google.com');
+      res.redirect(redirect.EMAIL_CONF_ERROR);
     }
   }
   async additionalInfo(req: Request, res: Response, next: NextFunction): Promise<void> {

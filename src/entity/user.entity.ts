@@ -1,8 +1,7 @@
 import {
   Entity, Column, PrimaryGeneratedColumn, OneToMany,
 } from 'typeorm';
-import { IUser } from '../Interface/return.interface';
-// import { SessionEntity } from './session.entity';
+import { IUser } from '../Interface/user.interface';
 
 @Entity()
 export class UserEntity implements IUser {

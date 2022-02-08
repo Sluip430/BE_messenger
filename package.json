@@ -5,7 +5,6 @@
   "main": "index.ts",
   "dependencies": {
     "@sendgrid/mail": "^7.6.0",
-    "aws-sdk": "^2.1066.0",
     "axios": "^0.25.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
@@ -13,15 +12,11 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
-    "multer": "^1.4.4",
-    "multer-s3": "^2.10.0",
     "nodemon": "^2.0.15",
     "package-json": "^6.5.0",
     "pg": "^8.7.1",
-    "pm2": "^5.1.2",
     "postgres": "^1.0.2",
     "reflect-metadata": "^0.1.13",
-    "s3": "^4.4.0",
     "send": "^0.17.2",
     "sendgrid": "^5.2.3",
     "touch": "^3.1.0",
@@ -32,7 +27,8 @@
     "typescript": "^4.5.5"
   },
   "scripts": {
-    "start": "node_modules/.bin/nodemon index.ts"
+    "start": "node_modules/.bin/nodemon index.ts",
+    "starting": "node index.ts"
   },
   "keywords": [
     "express"
@@ -41,11 +37,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.13",
-    "@types/multer": "^1.4.7",
     "@types/pg": "^8.6.4",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
-    "aws-sdk": "^2.1066.0",
     "eslint": "7.7.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.10.0",
