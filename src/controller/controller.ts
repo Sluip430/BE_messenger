@@ -70,7 +70,7 @@ export class Controller {
 
     if (error) return next({ data: error.details[0].message, status: 400 });
 
-    const result = authorizationServices.confirmEmail(value);
+    const result = await authorizationServices.confirmEmail(value);
 
     if (result) {
       res.setHeader('confirmation-token', value.token);
