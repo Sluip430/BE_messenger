@@ -1,17 +1,17 @@
 import { getRepository, Repository } from 'typeorm';
 import moment from 'moment';
-import axios from 'axios';
 import { UserEntity } from '../entity/user.entity';
 import {
   IResult, IReturnError, IReturnResult, IReturnUserEntity,
 } from '../Interface/return.interface';
 import { IUser } from '../Interface/user.interface';
+import { IError } from '../Interface/Error';
 
 export class UserRepository {
   typeORMRepository: Repository<UserEntity>;
   constructor() {}
 
-  async createUser(value: IUser): Promise<IResult<UserEntity, IReturnError>> {
+  async createUser(value: IUser): Promise<IResult<IReturnUserEntity, IError>> {
     try {
       this.typeORMRepository = getRepository(UserEntity);
       value.confirmation_send_at = moment().toDate();
@@ -19,9 +19,9 @@ export class UserRepository {
 
       const result = await this.typeORMRepository.save(user);
 
-      return { result };
+      return { result: { data: result, status: 201 } };
     } catch (error) {
-      return error;
+      return { error };
     }
   }
   async addInfoUser(value: IUser, id: number): Promise<IResult<IReturnUserEntity, IReturnError>> {

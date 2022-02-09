@@ -9,6 +9,7 @@ import { comparePassword, hashPassword } from '../../bcrypt/bcryptPassword';
 import { decodeToken, generateToken } from '../jwt';
 import { sendMail } from '../../helpers/sendGrid/sendMail';
 import { EmailSubjectEnum, EmailTextEnum } from '../../enum/mail.enum';
+import { mail } from '../../constraint/mail';
 
 dotenv.config();
 
@@ -55,9 +56,10 @@ export class AuthorizationServices {
       token,
       subject: EmailSubjectEnum.FORGOT_PASS_EMAIL,
       text: EmailTextEnum.FORGOT_PASS_EMAIL,
+      path: mail.PATH_FORGOT_PASS,
     });
 
-    if (error) return { error };
+    if (error) return { error: { data: error.message, status: 500 } };
 
     return { result: { data: result, status: 200 } };
   }
@@ -67,7 +69,7 @@ export class AuthorizationServices {
 
     if (tokenError) return { error: tokenError };
 
-    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(data.data.email);
+    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(data.email);
 
     if (DBError) return { error: DBError };
     if (!DBResult) return { error: { data: 'Not Found', status: 404 } };
@@ -82,7 +84,7 @@ export class AuthorizationServices {
 
     if (tokenError) return { error: tokenError };
 
-    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(data.data.email);
+    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(data.email);
 
     if (DBError) return { error: DBError };
     if (!DBResult) return { error: { data: 'Not Found', status: 404 } };
@@ -95,30 +97,31 @@ export class AuthorizationServices {
     return { result: { data: result, status: 200 } };
   }
 
-  async signUp(value: IUser): Promise<IResult<string, IReturnError>> {
+  async signUp(value: IUser): Promise<IResult<IReturnResult, IReturnError>> {
     value.password = await hashPassword(value.password);
 
     const { result: DBResult, error: DBError } = await userRepository.createUser(value);
 
-    if (DBError) return { error: DBError };
-    const token = generateToken(DBResult, JWT_MAIL_KEY);
+    if (DBError) return { error: { data: DBError.message, status: 500 } };
+    const token = generateToken(DBResult.data, JWT_MAIL_KEY);
     const { result: MailerResult, error: MailerError } = await sendMail.writeMail({
-      email: DBResult.email,
+      email: DBResult.data.email,
       token,
       text: EmailTextEnum.CONF_EMAIL,
       subject: EmailSubjectEnum.CONF_EMAIL,
+      path: mail.PATH_CONF,
     });
 
-    if (MailerError) return { error: { data: MailerError.data, status: MailerError.status } };
+    if (MailerError) return { error: { data: MailerError.message, status: 500 } };
 
-    return { result: MailerResult };
+    return { result: { data: MailerResult, status: 201 } };
   }
 
   async confirmEmail(value: IQuery): Promise<boolean> {
     const { result, error } = decodeToken(value.token, JWT_MAIL_KEY);
 
     if (error) return false;
-    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(result.data.email);
+    const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(result.email);
 
     if (DBError) return false;
     if (!DBResult) return false;
@@ -134,11 +137,11 @@ export class AuthorizationServices {
 
     if (error) return { error };
 
-    const { error: DBError } = await userRepository.addInfoUser(value, result.data.id);
+    const { error: DBError } = await userRepository.addInfoUser(value, result.id);
 
     if (DBError) return { error: DBError };
 
-    const newToken = generateToken(result.data, JWT_ACCESS_KEY);
+    const newToken = generateToken(result, JWT_ACCESS_KEY);
 
     return { result: { data: 'Information add', status: 201, token: newToken } };
   }

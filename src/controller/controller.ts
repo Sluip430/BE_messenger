@@ -6,7 +6,7 @@ import {
   signUpValidation,
 } from '../middlewares/validation/user.validator';
 import { authorizationServices } from '../services/authorization/authorization.services';
-import {redirect} from "../constraint/redirect";
+import { redirect } from '../constraint/redirect';
 
 export class Controller {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -86,7 +86,7 @@ export class Controller {
 
     const { result, error } = await authorizationServices.additionalInfo(value, req.headers.token);
 
-    if (error) return next({ data: error, status: 401 });
+    if (error) return next({ data: error, status: error.status });
 
     res.header('access-token', result.token);
     res.status(result.status).send(result.data);

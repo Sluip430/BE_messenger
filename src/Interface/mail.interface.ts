@@ -5,4 +5,5 @@ export interface TMail {
     token: string,
     subject: EmailSubjectEnum,
     text: EmailTextEnum,
+    path: string
 }
