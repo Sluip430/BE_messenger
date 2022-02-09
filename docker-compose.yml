@@ -1,6 +1,27 @@
-version: '3'
+version: '3.7'
+
+networks:
+  network1:
+    external: true
 
 services:
-  api:
-    build: ./api
-    command: npm start
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    networks:
+      - network1
+    ports:
+      - "5554:5432"
+
+  main:
+    container_name: messanger
+    restart: always
+    build: .
+    ports:
+      - "3001:3001"
+    command:
+      npm start
+    network_mode: host
+    depends_on:
+      - postgres
+

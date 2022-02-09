@@ -6,4 +6,5 @@ WORKDIR /usr/src/main
 COPY package*.json ./
 
 RUN npm install
-COPY .. .
+COPY . .
+CMD ["npm", "start"]
