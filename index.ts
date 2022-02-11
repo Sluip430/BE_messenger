@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { createConnection } from 'typeorm';
+import cors from 'cors';
 import config from './src/configurations/config';
 import { router } from './src/router/router';
 import { IError } from './src/Interface/Error';
@@ -8,6 +9,7 @@ import { routes } from './src/constraint/routes';
 createConnection().then(async (connection) => {
   const app = express();
 
+  app.use(cors());
   app.use(express.json());
 
   app.use(routes.API, router);

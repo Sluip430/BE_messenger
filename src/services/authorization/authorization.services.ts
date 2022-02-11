@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import moment from 'moment';
 import {
   IQuery, IResult, IReturnError, IReturnResult, IReturnResultWithToken,
@@ -10,12 +9,7 @@ import { decodeToken, generateToken } from '../jwt';
 import { sendMail } from '../../helpers/sendGrid/sendMail';
 import { EmailSubjectEnum, EmailTextEnum } from '../../enum/mail.enum';
 import { mail } from '../../constraint/mail';
-
-dotenv.config();
-
-const { JWT_MAIL_KEY } = process.env;
-const { JWT_ACCESS_KEY } = process.env;
-const { JWT_CONFIRMATION_KEY } = process.env;
+import {ConfigurationService} from "../../configurations/controller.config";
 
 export class AuthorizationServices {
   async signIn(value: IUser): Promise<IResult<IReturnResultWithToken, IReturnError>> {
@@ -35,7 +29,7 @@ export class AuthorizationServices {
       return { error: { data: 'Please verify your account ', status: 401 } };
     }
 
-    const token = generateToken(DBResult, JWT_ACCESS_KEY);
+    const token = generateToken(DBResult, ConfigurationService.getCustomKey('JWT_ACCESS_KEY'));
     const { error } = await userRepository.generateUserSession(DBResult);
 
     if (error) return { error };
@@ -49,7 +43,7 @@ export class AuthorizationServices {
     if (DBError) return { error: DBError };
     if (!DBResult) return { error: { data: 'Not Found', status: 404 } };
 
-    const token = generateToken(DBResult, JWT_MAIL_KEY);
+    const token = generateToken(DBResult, ConfigurationService.getCustomKey('JWT_MAIL_KEY'));
 
     const { result, error } = await sendMail.writeMail({
       email: DBResult.email,
@@ -65,7 +59,7 @@ export class AuthorizationServices {
   }
 
   async mailChangePassword(value: IQuery): Promise<IResult<IReturnResult, IReturnError>> {
-    const { result: data, error: tokenError } = decodeToken(value.token, JWT_MAIL_KEY);
+    const { result: data, error: tokenError } = decodeToken(value.token, ConfigurationService.getCustomKey('JWT_MAIL_KEY'));
 
     if (tokenError) return { error: tokenError };
 
@@ -74,13 +68,13 @@ export class AuthorizationServices {
     if (DBError) return { error: DBError };
     if (!DBResult) return { error: { data: 'Not Found', status: 404 } };
 
-    const result = generateToken(DBResult, JWT_CONFIRMATION_KEY);
+    const result = generateToken(DBResult, ConfigurationService.getCustomKey('JWT_CONFIRMATION_KEY'));
 
     return { result: { data: result, status: 200 } };
   }
 
   async changePassword(value: IUser, token: string): Promise<IResult<IReturnResult, IReturnError>> {
-    const { result: data, error: tokenError } = decodeToken(token, JWT_CONFIRMATION_KEY);
+    const { result: data, error: tokenError } = decodeToken(token, ConfigurationService.getCustomKey('JWT_CONFIRMATION_KEY'));
 
     if (tokenError) return { error: tokenError };
 
@@ -103,7 +97,7 @@ export class AuthorizationServices {
     const { result: DBResult, error: DBError } = await userRepository.createUser(value);
 
     if (DBError) return { error: { data: DBError.message, status: 500 } };
-    const token = generateToken(DBResult.data, JWT_MAIL_KEY);
+    const token = generateToken(DBResult.data, ConfigurationService.getCustomKey('JWT_MAIL_KEY'));
     const { result: MailerResult, error: MailerError } = await sendMail.writeMail({
       email: DBResult.data.email,
       token,
@@ -118,7 +112,7 @@ export class AuthorizationServices {
   }
 
   async confirmEmail(value: IQuery): Promise<boolean> {
-    const { result, error } = decodeToken(value.token, JWT_MAIL_KEY);
+    const { result, error } = decodeToken(value.token, ConfigurationService.getCustomKey('JWT_MAIL_KEY'));
 
     if (error) return false;
     const { result: DBResult, error: DBError } = await userRepository.getUserByEmail(result.email);
@@ -133,7 +127,7 @@ export class AuthorizationServices {
   }
 
   async additionalInfo(value: IUser, token: string | string[]): Promise<IResult<IReturnResultWithToken, IReturnError>> {
-    const { result, error } = await decodeToken(token as string, JWT_MAIL_KEY);
+    const { result, error } = await decodeToken(token as string, ConfigurationService.getCustomKey('JWT_MAIL_KEY'));
 
     if (error) return { error };
 
@@ -141,7 +135,7 @@ export class AuthorizationServices {
 
     if (DBError) return { error: DBError };
 
-    const newToken = generateToken(result, JWT_ACCESS_KEY);
+    const newToken = generateToken(result, ConfigurationService.getCustomKey('JWT_ACCESS_KEY'));
 
     return { result: { data: 'Information add', status: 201, token: newToken } };
   }

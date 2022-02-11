@@ -1,13 +1,9 @@
-import dotenv from 'dotenv';
 import sendGrid from '@sendgrid/mail';
 import { IResult } from '../../Interface/return.interface';
 import { TMail } from '../../Interface/mail.interface';
 import { mail } from '../../constraint/mail';
 import { IError } from '../../Interface/Error';
-
-dotenv.config();
-
-const { API_KEY } = process.env;
+import { ConfigurationService } from '../../configurations/controller.config';
 
 export class SendMail {
   public API_KEY: string;
@@ -34,4 +30,4 @@ export class SendMail {
   }
 }
 
-export const sendMail = new SendMail(API_KEY);
+export const sendMail = new SendMail(ConfigurationService.getCustomKey('API_KEY'));
