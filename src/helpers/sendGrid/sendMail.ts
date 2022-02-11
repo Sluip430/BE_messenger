@@ -31,7 +31,7 @@ export class SendMail {
         from: mail.emailFrom,
         subject,
         text,
-        html: `<h1>${text}${path}${token}</h1>`,
+        html: `<h1><a href=${path}${token}>${text}</a></h1>`,
       });
 
       return { result: `${text}${path}${token}` };
