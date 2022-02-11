@@ -42,7 +42,7 @@ export class Controller {
     if (error) return res.redirect(redirect.EMAIL_FORGOT_ERROR);
 
     res.setHeader('confirmation-token', result.data);
-    res.redirect(`redirect.EMAIL_FORGOT_SUCCESS?token=${result.data}`);
+    res.redirect(`${redirect.EMAIL_FORGOT_SUCCESS}?token=${result.data}`);
   }
   async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error: validationError } = passwordValidation.validate(req.body, { abortEarly: false });
