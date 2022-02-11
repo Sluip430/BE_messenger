@@ -2,7 +2,7 @@ import sendGrid from '@sendgrid/mail';
 import nodemailer from 'nodemailer';
 import { IResult } from '../../Interface/return.interface';
 import { TMail } from '../../Interface/mail.interface';
-import { mail } from '../../constraint/mail';
+import { htmlMail, mail } from '../../constraint/mail';
 import { IError } from '../../Interface/Error';
 import { ConfigurationService } from '../../configurations/controller.config';
 
@@ -31,7 +31,7 @@ export class SendMail {
         from: mail.emailFrom,
         subject,
         text,
-        html: `<h1><a href=${path}${token}>${text}</a></h1>`,
+        html: htmlMail(path, token, text),
       });
 
       return { result: `${text}${path}${token}` };
