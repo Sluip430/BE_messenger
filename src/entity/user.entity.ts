@@ -1,5 +1,5 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, OneToMany,
+  Entity, Column, PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IUser } from '../Interface/user.interface';
 

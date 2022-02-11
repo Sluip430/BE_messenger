@@ -9,7 +9,7 @@ import { decodeToken, generateToken } from '../jwt';
 import { sendMail } from '../../helpers/sendGrid/sendMail';
 import { EmailSubjectEnum, EmailTextEnum } from '../../enum/mail.enum';
 import { mail } from '../../constraint/mail';
-import {ConfigurationService} from "../../configurations/controller.config";
+import { ConfigurationService } from '../../configurations/controller.config';
 
 export class AuthorizationServices {
   async signIn(value: IUser): Promise<IResult<IReturnResultWithToken, IReturnError>> {
