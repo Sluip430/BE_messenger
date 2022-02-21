@@ -11,7 +11,7 @@ export const generateToken = (data: IUser | UserEntity, key: string): string => 
   return jwt.sign({ email, id }, key);
 };
 
-export const decodeToken = (token: string, key: string): IResult<IUser, IReturnError> => {
+export const decodeToken = <TResult>(token: string, key: string): IResult<IUser, IReturnError> => {
   try {
     return { result: jwt.verify(token, key) };
   } catch (error) {

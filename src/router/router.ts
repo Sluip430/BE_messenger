@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { routes } from '../constraint/routes';
-import { authorizationController } from '../controller/controller';
+import { authorizationController } from '../controller/autorization.controller';
 
 export const router = Router();
 

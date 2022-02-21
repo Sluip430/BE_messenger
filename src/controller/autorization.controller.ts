@@ -8,7 +8,7 @@ import {
 import { authorizationServices } from '../services/authorization/authorization.services';
 import { redirect } from '../constraint/redirect';
 
-export class Controller {
+export class AutorizationController {
   async signIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { value, error: validationError } = signUpValidation.validate(req.body, { abortEarly: false });
 
@@ -93,4 +93,4 @@ export class Controller {
   }
 }
 
-export const authorizationController = new Controller();
+export const authorizationController = new AutorizationController();

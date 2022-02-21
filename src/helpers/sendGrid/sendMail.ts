@@ -7,11 +7,6 @@ import { IError } from '../../Interface/Error';
 import { ConfigurationService } from '../../configurations/controller.config';
 
 export class SendMail {
-  public API_KEY: string;
-  constructor(API_KEY: string) {
-    this.API_KEY = API_KEY;
-    sendGrid.setApiKey(this.API_KEY);
-  }
   async writeMail({
     email, token, subject, text, path,
   }: TMail): Promise<IResult<string, IError>> {
@@ -41,4 +36,4 @@ export class SendMail {
   }
 }
 
-export const sendMail = new SendMail(ConfigurationService.getCustomKey('API_KEY'));
+export const sendMail = new SendMail();

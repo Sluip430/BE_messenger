@@ -4,7 +4,6 @@
   "description": "express practice",
   "main": "index.ts",
   "dependencies": {
-    "@sendgrid/mail": "^7.6.0",
     "axios": "^0.25.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
@@ -20,16 +19,13 @@
     "postgres": "^1.0.2",
     "reflect-metadata": "^0.1.13",
     "send": "^0.17.2",
-    "sendgrid": "^5.2.3",
     "touch": "^3.1.0",
     "ts-node": "^10.4.0",
-    "type-fest": "^0.20.2",
-    "type-is": "^1.6.18",
     "typeorm": "^0.2.41",
     "typescript": "^4.5.5"
   },
   "scripts": {
-    "start": "ts-node -r tsconfig-paths/register src/helpers/typeORMConfig.ts && ts-node index.ts"
+    "start": "ts-node -r tsconfig-paths/register src/helpers/typeORMConfig.ts && nodemon index.ts"
   },
   "keywords": [
     "express"
