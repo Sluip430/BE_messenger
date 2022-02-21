@@ -4,9 +4,9 @@ import {
 } from '../../Interface/return.interface';
 import { IUser } from '../../Interface/user.interface';
 import { userRepository } from '../../repository/user.repository';
-import { comparePassword, hashPassword } from '../../bcrypt/bcryptPassword';
+import { comparePassword, hashPassword } from '../../helpers/bcrypt/bcryptPassword';
 import { decodeToken, generateToken } from '../jwt';
-import { sendMail } from '../../helpers/sendGrid/sendMail';
+import { sendMail } from '../../helpers/sendMail/sendMail';
 import { EmailSubjectEnum, EmailTextEnum } from '../../enum/mail.enum';
 import { mail } from '../../constraint/mail';
 import { ConfigurationService } from '../../configurations/controller.config';
