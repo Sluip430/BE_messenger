@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { ConfigurationService } from '../configurations/controller.config';
+import { ConfigurationService } from '../../configurations/controller.config';
 
 export const hashPassword = async (password: string): Promise<string> => bcrypt.hash(password, +ConfigurationService.getCustomKey('SALT_BCRYPT'));
 

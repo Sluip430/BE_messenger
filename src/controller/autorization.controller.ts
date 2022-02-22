@@ -5,7 +5,7 @@ import {
   queryTokenValidation,
   signUpValidation,
 } from '../middlewares/validation/user.validator';
-import { authorizationServices } from '../services/authorization/authorization.services';
+import { authorizationServices } from '../services/authorization.services';
 import { redirect } from '../constraint/redirect';
 
 export class AutorizationController {

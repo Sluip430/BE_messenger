@@ -7,4 +7,11 @@ export const routes = {
   MAIL_CHANGE_PASSWORD: '/mail-change-password',
   CHANGE_PASSWORD: '/change-password',
   API: '/api',
+  USER: '/user',
+  ROOM: '/room',
+  CREATE: '/create',
+  ADD_USER_TO_ROOM: '/add-user-to-room',
+  GET_ROOM: '/get-room',
+  DEFAULT: '/',
+  MESSAGE: '/message',
 };

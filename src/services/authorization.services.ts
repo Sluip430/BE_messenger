@@ -1,15 +1,15 @@
 import moment from 'moment';
 import {
   IQuery, IResult, IReturnError, IReturnResult, IReturnResultWithToken,
-} from '../../Interface/return.interface';
-import { IUser } from '../../Interface/user.interface';
-import { userRepository } from '../../repository/user.repository';
-import { comparePassword, hashPassword } from '../../helpers/bcrypt/bcryptPassword';
-import { decodeToken, generateToken } from '../jwt';
-import { sendMail } from '../../helpers/sendMail/sendMail';
-import { EmailSubjectEnum, EmailTextEnum } from '../../enum/mail.enum';
-import { mail } from '../../constraint/mail';
-import { ConfigurationService } from '../../configurations/controller.config';
+} from '../Interface/return.interface';
+import { IUser } from '../Interface/user.interface';
+import { userRepository } from '../repository/user.repository';
+import { comparePassword, hashPassword } from '../helpers/bcrypt/bcryptPassword';
+import { decodeToken, generateToken } from './jwt';
+import { sendMail } from '../helpers/sendMail/sendMail';
+import { EmailSubjectEnum, EmailTextEnum } from '../enum/mail.enum';
+import { mail } from '../constraint/mail';
+import { ConfigurationService } from '../configurations/controller.config';
 
 export class AuthorizationServices {
   async signIn(value: IUser): Promise<IResult<IReturnResultWithToken, IReturnError>> {
