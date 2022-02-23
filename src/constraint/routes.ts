@@ -14,4 +14,5 @@ export const routes = {
   GET_ROOM: '/get-room',
   DEFAULT: '/',
   MESSAGE: '/message',
+  CONTACTS: '/contacts',
 };

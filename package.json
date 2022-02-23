@@ -19,6 +19,7 @@
     "postgres": "^1.0.2",
     "reflect-metadata": "^0.1.13",
     "send": "^0.17.2",
+    "socket.io": "^4.4.1",
     "touch": "^3.1.0",
     "ts-node": "^10.4.0",
     "typeorm": "^0.2.41",

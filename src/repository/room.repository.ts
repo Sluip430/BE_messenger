@@ -1,10 +1,10 @@
 import { getRepository, Repository } from 'typeorm';
 import {
-  IResult, IReturnUserEntity,
+  IResult, IReturnResultArrayAndCount,
 } from '../Interface/return.interface';
 import { IError } from '../Interface/Error';
 import { RoomEntity } from '../entity/room.entity';
-import { IRoom } from '../Interface/room.interface';
+import { IRoom, IRoomParams } from '../Interface/room.interface';
 import { IUser } from '../Interface/user.interface';
 
 export class RoomRepository {
@@ -22,7 +22,7 @@ export class RoomRepository {
       }
     }
 
-    async addUserToChat(roomId: any, userId: any): Promise<IResult<void, IError>> {
+    async addUserToChat(roomId: number, userId: number): Promise<IResult<any, any>> {
       try {
         const result = await this.typeORMRepository
           .createQueryBuilder('room')
@@ -36,7 +36,7 @@ export class RoomRepository {
       }
     }
 
-    async get(params: any, user: IUser): Promise<IResult<any, IError>> {
+    async get(params: IRoomParams, user: IUser): Promise<IResult<IReturnResultArrayAndCount, IError>> {
       try {
         this.typeORMRepository = getRepository(RoomEntity);
         const result = await this.typeORMRepository
@@ -49,6 +49,21 @@ export class RoomRepository {
           .getMany();
 
         return { result: { data: result, count: result.length } };
+      } catch (error) {
+        return { error };
+      }
+    }
+
+    async getUserInChat(user_id: number, chat_id: number): Promise<IResult<RoomEntity, IError>> {
+      try {
+        this.typeORMRepository = getRepository(RoomEntity);
+        const result = await this.typeORMRepository
+          .createQueryBuilder('chat')
+          .leftJoin('chat.users', 'users')
+          .where(`users.id = ${user_id} and chat.id = ${chat_id}`)
+          .getOne();
+
+        return { result };
       } catch (error) {
         return { error };
       }

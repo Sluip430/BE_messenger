@@ -1,10 +1,8 @@
-import sendGrid from '@sendgrid/mail';
 import nodemailer from 'nodemailer';
 import { IResult } from '../../Interface/return.interface';
 import { TMail } from '../../Interface/mail.interface';
 import { htmlMail, mail } from '../../constraint/mail';
 import { IError } from '../../Interface/Error';
-import { ConfigurationService } from '../../configurations/controller.config';
 
 export class SendMail {
   async writeMail({

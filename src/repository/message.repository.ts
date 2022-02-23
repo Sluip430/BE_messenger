@@ -1,9 +1,11 @@
-import { getRepository, InsertResult, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import moment from 'moment';
 import { MessageEntity } from '../entity/message.entity';
 import { UserEntity } from '../entity/user.entity';
 import { IResult } from '../Interface/return.interface';
-import { IRoom } from '../Interface/room.interface';
+import { RoomEntity } from '../entity/room.entity';
+import { IError } from '../Interface/Error';
+import { IGetMessages } from '../Interface/message.interface';
 
 export class MessageRepository {
   typeORMRepository: Repository<MessageEntity>;
@@ -11,27 +13,28 @@ export class MessageRepository {
   async create(value: any, user: UserEntity): Promise<IResult<any, any>> {
     try {
       this.typeORMRepository = getRepository(MessageEntity);
-      const result = await this.typeORMRepository.createQueryBuilder('message')
+      const message = {
+        text: value.text,
+        read: false,
+        send_date: moment().toDate(),
+        user,
+        room: value.room_id,
+      };
+
+      await this.typeORMRepository.createQueryBuilder('message')
         .insert()
         .into(MessageEntity)
-        .values([
-          {
-            text: value.text,
-            read: false,
-            send_date: moment().toDate(),
-            user,
-            room: value.room_id,
-          },
+        .values([message,
         ])
         .execute();
 
-      return { result };
+      return { result: message };
     } catch (error) {
       return { error };
     }
   }
 
-  async getLastMessageInRoom(room: IRoom): Promise<any> {
+  async getLastMessageInRoom(room: RoomEntity): Promise<IResult<MessageEntity | RoomEntity, IError>> {
     try {
       this.typeORMRepository = getRepository(MessageEntity);
       const result = await this.typeORMRepository
@@ -42,10 +45,30 @@ export class MessageRepository {
         .getMany();
 
       if (!result[0]) {
-        return { room };
+        return { result: room };
       }
 
-      return result[0];
+      return { result: result[0] };
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async getAllByChat(value: IGetMessages): Promise<IResult<MessageEntity[], Error>> {
+    try {
+      this.typeORMRepository = getRepository(MessageEntity);
+
+      const result = await this.typeORMRepository
+        .createQueryBuilder('message')
+        .leftJoinAndSelect('message.user', 'user')
+        .leftJoinAndSelect('message.room', 'room')
+        .where(`room.id = ${value.room_id}`)
+        .offset((value.page - 1) * value.perPage)
+        .limit(value.perPage)
+        .orderBy('message.send_date', 'ASC')
+        .getMany();
+
+      return { result };
     } catch (error) {
       return { error };
     }

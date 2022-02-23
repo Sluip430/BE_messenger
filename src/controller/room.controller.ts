@@ -14,7 +14,7 @@ export class RoomController {
 
     const { result, error } = await roomServices.get(value, req.headers);
 
-    if (error) return next({ data: error.message, status: 500 });
+    if (error) return next({ data: error.data, status: 500 });
 
     res.status(result.status).send(result);
   }

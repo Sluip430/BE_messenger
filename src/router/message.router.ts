@@ -5,4 +5,5 @@ import { messageController } from '../controller/message.controller';
 export const messageRouter = Router();
 
 messageRouter
-  .post(routes.CREATE, messageController.create);
+  .post(routes.CREATE, messageController.create)
+  .get(routes.DEFAULT, messageController.get);

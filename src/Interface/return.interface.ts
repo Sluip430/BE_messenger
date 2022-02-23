@@ -1,5 +1,7 @@
 import { UserEntity } from '../entity/user.entity';
 import { IUser } from './user.interface';
+import { RoomEntity } from '../entity/room.entity';
+import { MessageEntity } from '../entity/message.entity';
 
 export interface IResult<TResult, TError> {
     result?: TResult;
@@ -9,6 +11,20 @@ export interface IResult<TResult, TError> {
 export interface IReturnResult {
     data: string;
     status: number;
+}
+
+export interface IResultDataMessageArray {
+    data: MessageEntity[];
+    status: number;
+}
+
+export interface IReturnResultArrayAndCount {
+    data: RoomEntity[];
+    count: number;
+}
+
+export interface IReturnResultWithCount extends IReturnResult {
+    count: number;
 }
 
 export interface IReturnIUser {

@@ -9,3 +9,9 @@ export interface IMessage {
   user: UserEntity,
   room: RoomEntity
 }
+
+export interface IGetMessages {
+  room_id: number
+  page: number;
+  perPage: number;
+}

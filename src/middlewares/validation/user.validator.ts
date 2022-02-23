@@ -24,3 +24,7 @@ export const emailValidation = Joi.object().keys({
 export const passwordValidation = Joi.object().keys({
   password: Joi.string().min(2).required(),
 });
+
+export const userIdValidation = Joi.object().keys({
+  user_email: Joi.string().min(2).required(),
+});
